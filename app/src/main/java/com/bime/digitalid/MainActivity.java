@@ -28,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     public static final Integer LOGIN_CODE = 123;
 
     private static String service = "http://";
-    private static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
+    //private static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
+    private static String server = "bime-0419.appspot.com";
 
     private String TAG = "Main";
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.encodeBitmap(content, BarcodeFormat.QR_CODE, 400, 400);
+            Log.d(TAG, "Created barcode with content:"+content);
             ImageView imageViewQrCode = findViewById(R.id.qr_view);
             imageViewQrCode.setImageBitmap(bitmap);
         } catch(Exception e) {
