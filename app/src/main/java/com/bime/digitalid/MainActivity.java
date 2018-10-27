@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String LOGIN_TOKEN = "com.bime.digitalid.TOKEN";
     public static final Integer LOGIN_CODE = 123;
 
-    private static String service = "http://";
-    //private static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
-    private static String server = "bime-0419.appspot.com";
+    public static String service = "http://";
+//    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
+    public static String server = "bime-0419.appspot.com";
 
     private String TAG = "Main";
 
