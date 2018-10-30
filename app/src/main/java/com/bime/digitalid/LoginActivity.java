@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,6 +26,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+
 import static com.bime.digitalid.CredentialsHelper.createLoginCredentials;
 import static com.bime.digitalid.MainActivity.server;
 import static com.bime.digitalid.MainActivity.service;
@@ -32,24 +36,27 @@ public class LoginActivity extends AppCompatActivity {
 
     private String TAG = "Login";
     private String resource = "/api/authentication/authenticate";
-    
+    TextView resultTextView ;
+    Button signInButton;
+    int retrySeconds = 5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Created Login Activity");
         setContentView(R.layout.activity_login);
-        Button signInButton = findViewById(R.id.SignInButton);
+        resultTextView = (TextView) findViewById(R.id.resultTextView);
+        signInButton = findViewById(R.id.SignInButton);
+        resultTextView.setText("");
         final EditText inputEmail = findViewById(R.id.inputBannedId);
         final EditText inputPassword = findViewById(R.id.inputPassword);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getUserNamePassword(inputEmail, inputPassword);
-
             }
-        });
 
-        TextView resultTextView = (TextView) findViewById(R.id.resultTextView);
+        });
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -65,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
     private void getUserNamePassword(EditText inputEmail, EditText inputPassword) {
         JSONObject credentials = createLoginCredentials(inputEmail.getText().toString(),
                 inputPassword.getText().toString()) ;
-        Log.d(TAG, "Here is where we contact the server with"+ credentials);
         sendCredentials(credentials);
     }
 
@@ -74,7 +80,8 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = service+server+resource;
-
+        Log.d(TAG, "Here is where we contact the server with"+ credentialsHelper);
+        Log.d(TAG, "Request URL "+url);
         // Request a string response from the provided URL.
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, credentialsHelper,
                 new Response.Listener<JSONObject>() {
@@ -99,7 +106,29 @@ public class LoginActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "That didn't work! "+error.toString());
+                int returnCode = error.networkResponse.statusCode;
+                if (returnCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    retrySeconds = 2*retrySeconds;
+                    Log.d(TAG, "Unauthorized, increasing delay to "+retrySeconds + " seconds.");
+                    signInButton.setClickable(false);
+                    resultTextView.setText("Incorrect User Name or Password \nPlease retry in "+retrySeconds + "seconds");
+                    resultTextView.setTextSize(12);
+//                    try {
+//                        Thread.sleep(retrySeconds * 1000);
+//                    } catch (Exception e){
+//                        Log.e(TAG,  e.getMessage());
+//                    }
+                    signInButton.setClickable(true);
+//                    resultTextView.setText("");
+                } else {
+
+                    resultTextView.setText("Server Error, Please Try Later.");
+                    Log.d(TAG, "That didn't work! " + error.getMessage());
+                    Log.d(TAG, "Response code: " + error.networkResponse.statusCode);
+                    Log.d(TAG, "Data is bytes long :" + error.networkResponse.data.length);
+                    Log.d(TAG, "Data :" + new String(error.networkResponse.data));
+                    Log.d(TAG, "Cause :" + error.getCause());
+                }
             }
         }) ;
         // Add the request to the RequestQueue.
