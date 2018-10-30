@@ -81,14 +81,18 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // Log the response string.
-                        Log.d(TAG, "Got token: "+response);
+                        Log.d(TAG, "Got response: "+response);
 
                         String token = null;
+                        String bannerID = null;
                         try {
                             token = response.getString("token");
+                            bannerID = response.getString("bannerID");
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
                         }
+                        Log.d(TAG, "Got token: "+token);
+                        Log.d(TAG, "Got bannerID: "+bannerID);
 
                         //Send back to main Activity
                         Intent returnIntent = new Intent();
@@ -100,6 +104,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "That didn't work! "+error.toString());
+                Log.d(TAG, "Response :"+error.networkResponse.statusCode);
+                Log.d(TAG, new String(error.networkResponse.data));
             }
         }) ;
         // Add the request to the RequestQueue.

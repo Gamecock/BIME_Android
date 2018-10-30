@@ -11,8 +11,8 @@ public final class CredentialsHelper {
     public static JSONObject createLoginCredentials (String BannerId, String Password){
         final JSONObject credentials = new JSONObject();
         try {
-            credentials.put("BannerId", BannerId);
-            credentials.put("Password", Password);
+            credentials.put("bannerID", BannerId);
+            credentials.put("password", Password);
         } catch (JSONException e){
             Log.e("Login: ", e.getMessage() );
         }
