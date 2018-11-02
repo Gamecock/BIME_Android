@@ -40,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
                 returnIntent.putExtra(MainActivity.LOGIN_TOKEN, result);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
+
+
             }
         });
 

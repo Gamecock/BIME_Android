@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                generateQR("Hello World");
+                new Main2Activity();
             }
         });
         if (null == token) {
@@ -41,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode,data);
-        if (requestCode == LOGIN_CODE){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 token = data.getStringExtra(LOGIN_TOKEN);
                 //TODO: error handling
             }
-        }else {
-            Log.e(TAG, "No idea what is request code:"+requestCode);
+        } else {
+            Log.e(TAG, "No idea what is request code:" + requestCode);
         }
     }
 
@@ -60,10 +60,11 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = barcodeEncoder.encodeBitmap(content, BarcodeFormat.QR_CODE, 400, 400);
             ImageView imageViewQrCode = findViewById(R.id.qr_view);
             imageViewQrCode.setImageBitmap(bitmap);
-        } catch(Exception e) {
-            Log.e(TAG, e.getMessage() );
+        } catch (Exception e) {
+            //Log.e(TAG, e.getMessage() );
+
         }
     }
-
-
 }
+
+
