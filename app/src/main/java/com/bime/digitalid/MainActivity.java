@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Main2Activity();
+                new MainActivity();
             }
         });
         if (null == token) {
@@ -37,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             Log.d(TAG, "Starting Activity for result");
             startActivityForResult(loginIntent, LOGIN_CODE);
+
+            button = (Button) findViewById(R.id.button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openActivity2();
+                }
+                });
+            }}
+                public void openActivity2(){
+                    Intent intent = new Intent this, activity_main2.class
         }
     }
 

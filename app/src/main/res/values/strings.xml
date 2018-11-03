@@ -2,4 +2,7 @@
     <string name="app_name">Digital Id</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="building_access">Building Access</string>
+    <string name="meal_plan">Meal Plan</string>
+    <string name="book_purchase">Book Purchase</string>
 </resources>
