@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.bime.digitalid.CredentialsHelper.createLoginCredentials;
 import static com.bime.digitalid.MainActivity.server;
 import static com.bime.digitalid.MainActivity.service;
 
@@ -43,10 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginCredentials loginCredentials = new LoginCredentials(inputEmail.getText().toString(),
-                        inputPassword.getText().toString()) ;
-                Log.d(TAG, "Here is where we contact the server");
-                sendCredentials(loginCredentials);
+                getUserNamePassword(inputEmail, inputPassword);
 
             }
         });
@@ -64,14 +62,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void sendCredentials(LoginCredentials loginCredentials){
+    private void getUserNamePassword(EditText inputEmail, EditText inputPassword) {
+        JSONObject credentials = createLoginCredentials(inputEmail.getText().toString(),
+                inputPassword.getText().toString()) ;
+        Log.d(TAG, "Here is where we contact the server with"+ credentials);
+        sendCredentials(credentials);
+    }
+
+    private void sendCredentials(JSONObject credentialsHelper){
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = service+server+resource;
 
         // Request a string response from the provided URL.
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, loginCredentials,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, credentialsHelper,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
