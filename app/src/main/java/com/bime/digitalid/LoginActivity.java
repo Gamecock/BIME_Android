@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                         //Send back to main Activity
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra(MainActivity.LOGIN_TOKEN, token);
+                        returnIntent.putExtra(MainActivity.BANNER_ID, bannerID);
                         setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                     }

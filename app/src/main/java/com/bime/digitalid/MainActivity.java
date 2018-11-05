@@ -25,6 +25,8 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     public static final String LOGIN_TOKEN = "com.bime.digitalid.TOKEN";
+    public static final String BANNER_ID = "com.bime.digitalid.BANNER";
+
     public static final Integer LOGIN_CODE = 123;
 
     //Primary Service leave active normally
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = "Main";
 
     private String token = null;   //TODO: Determine proper way to handle tokens
+    private String bannerID = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == LOGIN_CODE){
             if (resultCode == Activity.RESULT_OK) {
                 token = data.getStringExtra(LOGIN_TOKEN);
+                bannerID = data.getStringExtra(BANNER_ID);
+
                 //TODO: error handling
             }
         }else {
