@@ -27,9 +27,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String LOGIN_TOKEN = "com.bime.digitalid.TOKEN";
     public static final Integer LOGIN_CODE = 123;
 
-    public static String service = "http://";
+    //Primary Service leave active normally
+    public static String service = "https://";  //Azure & GCP are secure
+    public static String server = "bimewebapi.azurewebsites.net";
+    // Comment out above server and uncomment below server for GCP testing
+//    public static String server = "bime-0419.appspot.com";
+    //Comment out above lines and uncomment below to use localhost and http
+//  public static String service = "http://";
 //    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
-    public static String server = "bime-0419.appspot.com";
 
     private String TAG = "Main";
 
