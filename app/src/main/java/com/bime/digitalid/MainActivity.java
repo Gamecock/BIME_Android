@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     // Comment out above server and uncomment below server for GCP testing
 //    public static String server = "bime-0419.appspot.com";
     //Comment out above lines and uncomment below to use localhost and http
-//  public static String service = "http://";
-//    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
+  public static String service = "http://";
+    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
 
     private String TAG = "Main";
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Created Main Activity");
         setContentView(R.layout.activity_main);
-        Button button = findViewById(R.id.button);
+        Button button = findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.encodeBitmap(content, BarcodeFormat.QR_CODE, 400, 400);
             Log.d(TAG, "Created barcode with content:"+content);
-            ImageView imageViewQrCode = findViewById(R.id.qr_view);
-            imageViewQrCode.setImageBitmap(bitmap);
+//            ImageView imageViewQrCode = findViewById(R.id.qr_view);
+//            imageViewQrCode.setImageBitmap(bitmap);
         } catch(Exception e) {
             Log.e(TAG, e.getMessage() );
         }
