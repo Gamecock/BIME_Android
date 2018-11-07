@@ -12,8 +12,7 @@ import com.android.volley.RequestQueue;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.android.volley.toolbox.JsonObjectRequest;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.google.zxing.BarcodeFormat;
@@ -74,19 +73,16 @@ public class MainActivity extends AppCompatActivity {
     }
     private void getQRText(String resource){
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url = service+server+resource;
 
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
+        // Request a JSON response from the provided URL.
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         String content = null;
                         try {
-                            JSONObject respObject = new JSONObject(response);
-                            content = respObject.getString("content");
+                            content = response.getString("content");
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
                         }
@@ -102,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Add the request to the RequestQueue.
         Log.d(TAG, "Sending request to server:"+url);
-        queue.add(stringRequest);
+        MyRequestQueue.getInstance(this.getApplicationContext()).addToRequestQueue(request);
     }
 
     private void generateQR(String content) {
