@@ -72,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "No idea what is request code:"+requestCode);
         }
     }
-    private void getQRText(String resource){
+    void getQRText(String resource){
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = service+server+resource;
-
+Log.d(TAG, "Sending request to:"+url);
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

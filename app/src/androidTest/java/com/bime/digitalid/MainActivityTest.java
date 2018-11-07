@@ -33,14 +33,16 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mActivityRule
             = new ActivityTestRule<>(MainActivity.class);
     @Test
-    public void buttonClickCallsServer(){
+    public void testButtonClickCallsServer(){
         server = new MockWebServer();
         try {
             server.start();
             server.enqueue(new MockResponse().setBody("{ \"content\" : \"Hello, Brian!\" }"));
             HttpUrl baseURL = server.url("/v1/chat");
-            MainActivity.server = baseURL.toString();
-            Log.d(TAG, "ServerUrl: "+baseURL);
+            int port = baseURL.port();
+            String testServer = new StringBuilder("2.2.2.2:").append(port).toString();
+            MainActivity.server = testServer;
+            Log.d(TAG, "ServerUrl: "+testServer);
 
             //Test Action
             onView(withId(R.id.button)).perform(click());
