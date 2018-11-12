@@ -15,11 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,12 +68,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void sendCredentials(JSONObject credentialsHelper){
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = service+server+resource;
 
-        // Request a string response from the provided URL.
+        // Post Credentials to Server.
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, credentialsHelper,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -109,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }) ;
         // Add the request to the RequestQueue.
-        queue.add(request);
+        MyRequestQueue.getInstance(this.getApplicationContext()).addToRequestQueue(request);
 
     }
 
