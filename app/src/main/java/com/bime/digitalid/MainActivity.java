@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     // Comment out above server and uncomment below server for GCP testing
 //    public static String server = "bime-0419.appspot.com";
     //Comment out above lines and uncomment below to use localhost and http
-  public static String service = "http://";
-    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
+//  public static String service = "http://";
+//    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
 
     private String TAG = "Main";
 
