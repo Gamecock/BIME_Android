@@ -4,97 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:maxWidth="500dp"
-    android:maxHeight="500dp"
-    android:minWidth="32dp"
-    android:minHeight="32dp"
-    tools:context=".MainActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:context=".MainActivity">
 
     <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/qr_view"
-        android:layout_width="392dp"
-        android:layout_height="658dp"
-        android:contentDescription="@string/location_of_qr_code"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:contentDescription="Location of QR Code" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.028"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-
-    <Button
-        android:id="@+id/MealPlan"
-        android:layout_width="128dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/meal_plan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/qr_view" />
-
-    <Button
-        android:id="@+id/BookPurchase"
-        android:layout_width="132dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/book_purchase"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/MealPlan" />
-
-    <Button
-        android:id="@+id/FacilityAccess"
-        android:layout_width="133dp"
-        android:layout_height="wrap_content"
-        android:text="@string/facility_access"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/BookPurchase"
-        app:layout_constraintVertical_bias="0.155" />
-
-    <LinearLayout
-        android:id="@+id/StudentID"
-        android:layout_width="342dp"
-        android:layout_height="144dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/MealPlan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+        android:text="Button"
+        app:layout_constraintLeft_toLeftOf="@id/qr_view"
+        app:layout_constraintTop_toTopOf="@id/qr_view" />
 
 </android.support.constraint.ConstraintLayout>
