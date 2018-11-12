@@ -48,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getQRText("/greeting?name=Brian");
+                //Commented out pending PR for multiple buttons
+//                getQRText("/greeting?name=Brian");
+                String BannerId = "B0223456";
+                getMealTicket(BannerId);
             }
         });
         if (null == token) {
@@ -70,7 +73,76 @@ public class MainActivity extends AppCompatActivity {
         }else {
             Log.e(TAG, "No idea what is request code:"+requestCode);
         }
+        String BannerId = "B0223456";
+        getRemainingMeals(BannerId);
+
     }
+
+    private void getRemainingMeals(String BannerId){
+        String mealResource = new StringBuilder( "/api/").append(BannerId).append("/meals/plan").toString();
+        String url = service+server+mealResource;
+
+        // Request a JSON response from the provided URL.
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Integer meals = null;
+                        try {
+                            meals = response.getInt("MealCount");
+                        } catch (JSONException e) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                        Log.d(TAG, "Number of meals available:"+meals);
+                        Button button = findViewById(R.id.button);
+                        button.setText(new StringBuilder("Get Meal, ").append(meals).append(" remaining").toString());
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "That didn't work!"+error.toString());
+                //TODO: Display error for user.
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        Log.d(TAG, "Sending request to server:"+url);
+        MyRequestQueue.getInstance(this.getApplicationContext()).addToRequestQueue(request);
+
+    }
+    private void getMealTicket(String BannerId){
+
+        String mealResource = new StringBuilder( "/api/").append(BannerId).append("/meals/ticket").toString();
+        String url = service+server+mealResource;
+
+        // Request a JSON response from the provided URL.
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        String content = null;
+                        try {
+                            content = response.getString("MealTicket");
+                        } catch (JSONException e) {
+                            Log.e(TAG, e.getMessage());
+                        }
+                        generateQR(content);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "That didn't work!"+error.toString());
+                //TODO: Display error for user.
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        Log.d(TAG, "Sending meal token request to server:"+url);
+        MyRequestQueue.getInstance(this.getApplicationContext()).addToRequestQueue(request);
+    }
+
+
     private void getQRText(String resource){
 
         String url = service+server+resource;
