@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static final Integer LOGIN_CODE = 123;
+    public static final Integer QR_DISPLAY_CODE = 456;
 
 
     //Primary Service leave active normally
@@ -69,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             Log.d(TAG, "Starting Activity for result");
             startActivityForResult(loginIntent, LOGIN_CODE);
+        } else {
+            getRemainingMeals(bannerID);
+
         }
     }
 
@@ -82,9 +86,12 @@ public class MainActivity extends AppCompatActivity {
 
                 //TODO: error handling
             }
-        }else {
-            Log.e(TAG, "No idea what is request code:"+requestCode);
+        }else if(requestCode == QR_DISPLAY_CODE) {
+            Log.d(TAG,"Returning from Diplay");
+        } else {
+                Log.e(TAG, "No idea what is request code:"+requestCode);
         }
+
         getRemainingMeals(bannerID);
 
     }
@@ -127,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public Map<String, String>getHeaders() {
                 Map<String,String> params = new HashMap<>();
-                params.put("Authorization: Bearer", token);
+                params.put("Authorization", "Bearer "+token);
                 return params;
             }
         };
@@ -164,7 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "Response Code: "+error.networkResponse.statusCode);
                 generateQR(error.getMessage(),error.networkResponse.statusCode);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + token);
+                return params;
+            }
+        };
 
         // Add the request to the RequestQueue.
         Log.d(TAG, "Sending meal token request to server:"+url);
@@ -176,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, QRActivity.class);
         intent.putExtra(QR_TEXT, content);
         intent.putExtra(QR_STATUS, code);
-        startActivity(intent);
+        startActivityForResult(intent, QR_DISPLAY_CODE);
     }
 
 
