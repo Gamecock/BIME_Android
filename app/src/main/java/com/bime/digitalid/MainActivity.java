@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
 import com.android.volley.Request;
 
 import com.android.volley.Response;
@@ -16,6 +17,14 @@ import android.widget.Button;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.bime.digitalid.CredentialsHelper.createBannerID;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String LOGIN_TOKEN = "com.bime.digitalid.TOKEN";
@@ -25,15 +34,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static final Integer LOGIN_CODE = 123;
+    public static final Integer QR_DISPLAY_CODE = 456;
+
 
     //Primary Service leave active normally
     public static String service = "https://";  //Azure & GCP are secure
     public static String server = "bimewebapi.azurewebsites.net";
     // Comment out above server and uncomment below server for GCP testing
-//    public static String server = "bime-0419.appspot.com";
+//  public static String server = "bime-0419.appspot.com";
     //Comment out above lines and uncomment below to use localhost and http
 //  public static String service = "http://";
-//    public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
+//  public static String server = "10.0.2.2:8080";  //this is localhost on laptop when using emulator
 
     private String TAG = "Main";
 
@@ -51,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Commented out pending PR for multiple buttons
-//                getQRText("/greeting?name=Brian");
                 getMealTicket(bannerID);
             }
         });
@@ -61,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             Log.d(TAG, "Starting Activity for result");
             startActivityForResult(loginIntent, LOGIN_CODE);
+        } else {
+            getRemainingMeals(bannerID);
+
         }
     }
 
@@ -74,30 +86,39 @@ public class MainActivity extends AppCompatActivity {
 
                 //TODO: error handling
             }
-        }else {
-            Log.e(TAG, "No idea what is request code:"+requestCode);
+        }else if(requestCode == QR_DISPLAY_CODE) {
+            Log.d(TAG,"Returning from Diplay");
+        } else {
+                Log.e(TAG, "No idea what is request code:"+requestCode);
         }
+
         getRemainingMeals(bannerID);
 
     }
 
     private void getRemainingMeals(String BannerId){
-        String mealResource = new StringBuilder( "/api/").append(BannerId).append("/meals/plan").toString();
+        String mealResource = new String( "/api/meal/getmealcount");
         String url = service+server+mealResource;
+        JSONObject bannerId = createBannerID(BannerId);
 
         // Request a JSON response from the provided URL.
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bannerId,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Integer meals = null;
                         try {
-                            meals = response.getInt("MealCount");
+                            meals = response.getInt("mealCount");
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
                         }
                         Log.d(TAG, "Number of meals available:"+meals);
-                        button.setText(new StringBuilder("Get Meal, ").append(meals).append(" remaining").toString());
+                        button.setText(new StringBuilder("Use Meal, ").append(meals).append(" remaining").toString());
+                        if (meals != null & meals > 0){
+                            button.setClickable(TRUE);
+                        } else {
+                            button.setClickable(FALSE);
+                        }
 
                     }
                 }, new Response.ErrorListener() {
@@ -106,9 +127,17 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "That didn't work!" +error.toString());
                 Log.e(TAG, "Response Code: " +error.networkResponse.statusCode);
                 Log.e(TAG, "Error message:" +error.getMessage());
-                //TODO: Display error for user.
+                button.setClickable(FALSE);
+                button.setText("No Meals Available - Error:"+error.networkResponse.statusCode);
             }
-        });
+        }){
+            @Override
+            public Map<String, String>getHeaders() {
+                Map<String,String> params = new HashMap<>();
+                params.put("Authorization", "Bearer "+token);
+                return params;
+            }
+        };
 
         // Add the request to the RequestQueue.
         Log.d(TAG, "Sending request to server:"+url);
@@ -117,11 +146,12 @@ public class MainActivity extends AppCompatActivity {
     }
     private void getMealTicket(String BannerId){
 
-        String mealResource = new StringBuilder( "/api/").append(BannerId).append("/meals/ticket").toString();
+        String mealResource = new String( "/api/meal/usemeal");
         String url = service+server+mealResource;
+        JSONObject bannerId = createBannerID(BannerId);
 
         // Request a JSON response from the provided URL.
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bannerId,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -131,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
                         }
-                        generateQR(content, 200);
+                        generateQR(response.toString(), 200);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -141,7 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "Response Code: "+error.networkResponse.statusCode);
                 generateQR(error.getMessage(),error.networkResponse.statusCode);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + token);
+                return params;
+            }
+        };
 
         // Add the request to the RequestQueue.
         Log.d(TAG, "Sending meal token request to server:"+url);
@@ -153,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, QRActivity.class);
         intent.putExtra(QR_TEXT, content);
         intent.putExtra(QR_STATUS, code);
-        startActivity(intent);
+        startActivityForResult(intent, QR_DISPLAY_CODE);
     }
 
 
